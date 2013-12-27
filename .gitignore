@@ -1,0 +1,19 @@
+# built files
+*.o
+*.so
+*.la
+*_la-*
+
+# autotools
+aclocal.m4
+autom4te.cache
+config
+config.*
+configure
+.deps
+.libs
+libtool
+m4
+Makefile
+Makefile.in
+
