@@ -218,13 +218,17 @@ int svg2fps_animation_render_as_png (char **buffer, unsigned long *size, sah_t *
 	if (handle && handle->loaded) {
 		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, handle->width, handle->height);
 		status = cairo_surface_status (surface);
-		if (status != CAIRO_STATUS_SUCCESS)
+		if (status != CAIRO_STATUS_SUCCESS) {
+			g_fprintf(stderr, "Error: cairo surface status: %d\n", status);
 			return status;
+		}
 
 		cr = cairo_create (surface);
 		status = cairo_status (cr);
-		if (status != CAIRO_STATUS_SUCCESS)
+		if (status != CAIRO_STATUS_SUCCESS) {
+			g_fprintf(stderr, "Error: cairo status: %d\n", status);
 			return status;
+		}
 
 		if (handle->config) {
 			color [0] = handle->config->border;
