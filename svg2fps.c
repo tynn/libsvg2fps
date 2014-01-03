@@ -38,14 +38,18 @@ sad_t * svg2fps_load_document (char *uri, int fps, sac_t *config) {
 		return NULL;
 
 	data = malloc (sizeof(sad_t));
-	data->uri = uri;
-	data->fps = fps;
-	data->handle = svg2fps_animation_load (uri, config);
 
-	if (data->handle)
-		return data;
+	if (data) {
+		data->uri = uri;
+		data->fps = fps;
+		data->handle = svg2fps_animation_load (uri, config);
 
-	free(data);
+		if (data->handle)
+			return data;
+
+		free(data);
+	}
+
 	return NULL;
 }
 
@@ -60,7 +64,7 @@ void svg2fps_unload_document (sad_t *data) {
 
 
 bool svg2fps_render_frame_as_png (int frame, char **buffer, unsigned long *size, sad_t *data) {
-	if (!data || !data->uri)
+	if (!data || !data->handle)
 		return false;
 
 	svg2fps_animation_set_elapsed_time ((double) frame / data->fps, data->handle);

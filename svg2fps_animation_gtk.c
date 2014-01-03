@@ -161,18 +161,24 @@ sah_t * svg2fps_animation_load (char *uri, sac_t *config) {
 	sah_t *handle;
 
 	handle = g_malloc (sizeof(sah_t));
-	handle->config = config;
-	handle->loaded = false;
 
-	gtk_init (0, NULL);
-	_create_window (handle);
-	_create_web_view (handle);
-	_show_all (handle);
+	if (handle) {
+		handle->config = config;
+		handle->loaded = false;
 
-	webkit_web_view_load_uri (handle->web_view, uri);
-	gtk_main ();
+		gtk_init (0, NULL);
+		_create_window (handle);
+		_create_web_view (handle);
+		_show_all (handle);
 
-	return _after_gtk_main_quit (handle) ? handle : NULL;
+		webkit_web_view_load_uri (handle->web_view, uri);
+		gtk_main ();
+
+		if (_after_gtk_main_quit (handle))
+			return handle;
+	}
+
+	return NULL;
 }
 
 
