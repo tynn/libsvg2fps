@@ -1,6 +1,6 @@
 /*
  *	This file is part of libsvg2fps.
- *	
+ *
  *	Copyright (c) 2013 Christian Schmitz <tynn.dev@gmail.com>
  *
  *	libsvg2fps is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 #ifndef __svg2fps_animation_h__
 #define __svg2fps_animation_h__
 
+#include <stdbool.h>
 #include "svg2fps_animation_config.h"
 
 typedef struct svg2fps_animation_handle sah_t;
@@ -30,6 +31,6 @@ void svg2fps_animation_unload (sah_t *handle);
 
 void svg2fps_animation_set_elapsed_time (double elapsed_time, sah_t *handle);
 
-int svg2fps_animation_render_as_png (char **buffer, unsigned long *size, sah_t *handle);
+bool svg2fps_animation_render_as_png (char **buffer, unsigned long *size, sah_t *handle);
 
 #endif // __svg2fps_animation_h__

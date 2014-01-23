@@ -1,7 +1,7 @@
 /*
  *	This file is part of libsvg2fps.
  *
- *	Copyright (c) 2013 Christian Schmitz <tynn.dev@gmail.com>
+ *	Copyright (c) 2014 Christian Schmitz <tynn.dev@gmail.com>
  *
  *	libsvg2fps is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -17,18 +17,19 @@
  *	along with libsvg2fps. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __svg2fps_h__
-#define __svg2fps_h__
+#include "svg2fps_error.h"
 
-#include <stdbool.h>
-#include "svg2fps_animation_config.h"
 
-typedef struct svg2fps_animation_data sad_t;
+static const char *err_msg = 0;
 
-sad_t * svg2fps_load_document (char *uri, int fps, sac_t *config);
 
-void svg2fps_unload_document (sad_t *data);
+void svg2fps_error_set_msg (const char *msg) {
+	err_msg = msg;
+}
 
-bool svg2fps_render_frame_as_png (int frame, char **buffer, unsigned long *size, sad_t *data);
 
-#endif // __svg2fps_h__
+const char * svg2fps_error_get_msg ( void ) {
+	return err_msg;
+}
+
+

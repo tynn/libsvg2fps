@@ -1,6 +1,6 @@
 /*
  *	This file is part of libsvg2fps.
- *	
+ *
  *	Copyright (c) 2013 Christian Schmitz <tynn.dev@gmail.com>
  *
  *	libsvg2fps is free software: you can redistribute it and/or modify
@@ -18,8 +18,9 @@
  */
 
 #include <stdlib.h>
-#include "svg2fps_animation.h"
 #include "svg2fps.h"
+#include "svg2fps_animation.h"
+#include "svg2fps_error.h"
 
 #define FPS_MAX 120
 
@@ -27,7 +28,7 @@
 struct svg2fps_animation_data {
 	sah_t *handle;
 	char *uri;
-	int fps, err;
+	int fps;
 };
 
 
@@ -47,7 +48,9 @@ sad_t * svg2fps_load_document (char *uri, int fps, sac_t *config) {
 		if (data->handle)
 			return data;
 
-		free(data);
+		free (data);
+	} else {
+		svg2fps_error_set_msg (NO_MEMORY);
 	}
 
 	return NULL;
@@ -58,7 +61,7 @@ void svg2fps_unload_document (sad_t *data) {
 	if (data) {
 		if (data->handle)
 			svg2fps_animation_unload (data->handle);
-		free(data);
+		free (data);
 	}
 }
 
@@ -68,9 +71,8 @@ bool svg2fps_render_frame_as_png (int frame, char **buffer, unsigned long *size,
 		return false;
 
 	svg2fps_animation_set_elapsed_time ((double) frame / data->fps, data->handle);
-	data->err = svg2fps_animation_render_as_png (buffer, size, data->handle);
 
-	return !data->err;
+	return svg2fps_animation_render_as_png (buffer, size, data->handle);
 }
 
 

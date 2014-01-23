@@ -1,5 +1,5 @@
 #	This file is part of libsvg2fps.
-#	
+#
 #	Copyright (c) 2013 Christian Schmitz <tynn.dev@gmail.com>
 #
 #	libsvg2fps is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-pkginclude_HEADERS = svg2fps.h svg2fps_animation.h svg2fps_animation_config.h
+pkginclude_HEADERS = svg2fps.h svg2fps_animation.h svg2fps_animation_config.h svg2fps_error.h
 
 lib_LTLIBRARIES = libsvg2fps.la
-libsvg2fps_la_SOURCES = svg2fps.c
+libsvg2fps_la_SOURCES = svg2fps.c svg2fps_error.c
 libsvg2fps_la_LDFLAGS = -release $(engine) -version-info $(VERSION_INFO)
 
 if GTK

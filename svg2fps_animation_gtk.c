@@ -1,6 +1,6 @@
 /*
  *	This file is part of libsvg2fps.
- *	
+ *
  *	Copyright (c) 2013 Christian Schmitz <tynn.dev@gmail.com>
  *
  *	libsvg2fps is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 
 #include <webkit/webkit.h>
 #include "svg2fps_animation.h"
+#include "svg2fps_error.h"
 
 #define JS_PAUSE_ANIMATION "document.documentElement.pauseAnimations&&document.documentElement.pauseAnimations()"
 #define JS_SET_CURRENT_TIME_FORMAT "document.documentElement.setCurrentTime&&document.documentElement.setCurrentTime(Number('%f'.replace(',','.')))"
@@ -152,6 +153,7 @@ static bool _after_gtk_main_quit (sah_t *handle) {
 		return true;
 	} else {
 		svg2fps_animation_unload (handle);
+		svg2fps_error_set_msg ("Loading document failed");
 		return false;
 	}
 }
@@ -176,6 +178,8 @@ sah_t * svg2fps_animation_load (char *uri, sac_t *config) {
 
 		if (_after_gtk_main_quit (handle))
 			return handle;
+	} else {
+		svg2fps_error_set_msg (NO_MEMORY);
 	}
 
 	return NULL;
@@ -208,7 +212,8 @@ void svg2fps_animation_set_elapsed_time (double elapsed_time, sah_t *handle) {
 }
 
 
-int svg2fps_animation_render_as_png (char **buffer, unsigned long *size, sah_t *handle) {
+bool svg2fps_animation_render_as_png (char **buffer, unsigned long *size, sah_t *handle) {
+	static char error[34];
 	cairo_surface_t *surface;
 	cairo_t *cr;
 	cairo_status_t status;
@@ -219,15 +224,17 @@ int svg2fps_animation_render_as_png (char **buffer, unsigned long *size, sah_t *
 		surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, handle->width, handle->height);
 		status = cairo_surface_status (surface);
 		if (status != CAIRO_STATUS_SUCCESS) {
-			g_fprintf(stderr, "Error: cairo surface status: %d\n", status);
-			return status;
+			sprintf (error, "Cairo surface status: %d", status);
+			svg2fps_error_set_msg (error);
+			return false;
 		}
 
 		cr = cairo_create (surface);
 		status = cairo_status (cr);
 		if (status != CAIRO_STATUS_SUCCESS) {
-			g_fprintf(stderr, "Error: cairo status: %d\n", status);
-			return status;
+			sprintf (error, "Cairo status: %d", status);
+			svg2fps_error_set_msg (error);
+			return false;
 		}
 
 		if (handle->config) {
@@ -263,11 +270,15 @@ int svg2fps_animation_render_as_png (char **buffer, unsigned long *size, sah_t *
 		if (pixbuf) {
 			gdk_pixbuf_save_to_buffer (pixbuf, (gchar **) buffer, (gsize *) size, "png", NULL, NULL);
 			g_object_unref (pixbuf);
-			return 0;
+			return true;
+		} else {
+			svg2fps_error_set_msg ("Creating GdkPixbuf failed");
 		}
+	} else {
+		svg2fps_error_set_msg ("Svg data not present");
 	}
 
-	return -1;
+	return false;
 }
 
 
