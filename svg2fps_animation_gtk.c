@@ -237,6 +237,8 @@ bool svg2fps_animation_render_as_png (char **buffer, unsigned long *size, sah_t 
 			return false;
 		}
 
+		cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+
 		if (handle->config) {
 			color [0] = handle->config->border;
 			color [1] = handle->config->background;
@@ -245,7 +247,6 @@ bool svg2fps_animation_render_as_png (char **buffer, unsigned long *size, sah_t 
 		if (color [0]) {
 			cairo_set_source_rgba (cr, color[0]->r, color[0]->g, color[0]->b, color[0]->a);
 			cairo_paint (cr);
-			cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
 		}
 
 		cairo_translate (cr, handle->tx, handle->ty);
